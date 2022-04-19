@@ -10,11 +10,9 @@ async function authN(req, res, next) {
         name: "Invalid Token",
         message: "Please login first",
       };
-
     const payload = verifyToken(access_token);
     const foundUser = await prisma.user.findUnique({
       where: {
-        id: payload.id,
         email: payload.email,
       },
     });

@@ -1,7 +1,11 @@
 const errorHandler = (err, req, res, next) => {
-  console.log(err);
-  switch (err.name) {
+  switch (err.code) {
+    case "P2002":
+      res.status(400).json({
+        message: "A new user cannot be created with this email / username",
+      });
     case "Invalid email / password":
+    case "Invalid input":
       res.status(400).json({
         message: err.message,
       });

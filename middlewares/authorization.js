@@ -1,5 +1,3 @@
-const { Post } = require("../models");
-
 async function AuthZ(req, res, next) {
   try {
     const { id } = req.params;
