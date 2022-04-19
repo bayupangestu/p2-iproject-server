@@ -9,20 +9,19 @@ class UserController {
       const { username, email, password, bio, imageUrl } = req.body;
       if (!email)
         throw {
-          name: "Invalid email / password",
+          code: "Invalid email / password",
           message: "Email is required",
         };
       if (!password)
         throw {
-          name: "Invalid email / password",
+          code: "Invalid email / password",
           message: "Password is required",
         };
       if (!username)
         throw {
-          name: "Invalid email / password",
+          code: "Invalid email / password",
           message: "Username is required",
         };
-
       const userData = await prisma.user.create({
         data: {
           username,
