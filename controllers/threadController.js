@@ -5,9 +5,7 @@ const prisma = new PrismaClient();
 class ThreadController {
   static async getThread(req, res, next) {
     try {
-      const threadData = await prisma.thread.findMany({
-        include: { post: true },
-      });
+      const threadData = await prisma.thread.findMany({});
       res.status(200).json(threadData);
     } catch (err) {
       next(err);
@@ -17,7 +15,6 @@ class ThreadController {
     try {
       const { title, content, imageUrl } = req.body;
       const { userId } = req.userLogin;
-      console.log(userId);
       if (!title)
         throw {
           name: "Invalid input",
@@ -46,7 +43,7 @@ class ThreadController {
         threadData,
       });
     } catch (err) {
-      console.log(err);
+      next(err);
     }
   }
   static async detailThread(req, res, next) {
@@ -55,6 +52,9 @@ class ThreadController {
       const dataDetail = await prisma.thread.findUnique({
         where: {
           id: +id,
+        },
+        include: {
+          post: true,
         },
       });
       res.status(200).json(dataDetail);
@@ -83,7 +83,7 @@ class ThreadController {
           id: +id,
         },
       });
-      if (!thread) throw { name: "Not Found", message: `Thread with id ${id}` };
+      if (!thread) throw { name: "Not Found", message: `Thread with id ${id} not found` };
       res.status(201).json({
         message: "Edit Thread Success!",
         data: thread,
@@ -100,8 +100,6 @@ class ThreadController {
           id: +id,
         },
       });
-      console.log(id);
-      console.log(thread);
       if (!thread) throw { name: "Not Found", message: `Thread with Id ${id} not found` };
       await prisma.thread.delete({
         where: {

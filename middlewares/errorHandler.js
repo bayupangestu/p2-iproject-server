@@ -1,4 +1,5 @@
 const errorHandler = (err, req, res, next) => {
+  console.log(err);
   switch (err.code) {
     case "P2002":
       res.status(400).json({
