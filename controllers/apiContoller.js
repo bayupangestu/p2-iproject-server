@@ -1,5 +1,6 @@
 let base_url_event = "https://app.ticketmaster.com/discovery/v2/events.json";
 let base_url_news = "https://music-news-api.p.rapidapi.com/news";
+const xendit = require("xendit-node");
 const axios = require("axios");
 
 class ApiContoller {
@@ -9,12 +10,13 @@ class ApiContoller {
         method: "GET",
         url: base_url_event,
         params: {
-          apikey: "rdUsQNGzW2T0HrTvtFFr3DWLnqmmWalM",
+          apikey: process.env.SECRET_KEY_EVENT,
           classificationName: "music",
         },
       });
       const dataEvent = response.data._embedded.events.map((el) => {
         return {
+          id: el.id,
           name: el.name,
           image: el.images[1].url,
           startDate: el.dates.start.localDate,
@@ -34,11 +36,33 @@ class ApiContoller {
         url: base_url_news,
         headers: {
           "X-RapidAPI-Host": "music-news-api.p.rapidapi.com",
-          "X-RapidAPI-Key": "bceb9bc8d9msh32bf74c796f87bdp1e5348jsn7acd08d36732",
+          "X-RapidAPI-Key": process.env.SECRET_KEY_NEWS,
         },
       });
       res.status(200).json(data.splice(1, 17));
     } catch (err) {
+      next(err);
+    }
+  }
+  static async addXendit(req, res, next) {
+    try {
+      const secret = new xendit({
+        secretKey: process.env.SECRET_KEY_XENDIT,
+      });
+      const { Invoice } = secret;
+      const invoiceSpecificOptions = {};
+      const invoice = new Invoice(invoiceSpecificOptions);
+      let max = 2000000;
+      let min = 1000000;
+      const response = await invoice.createInvoice({
+        externalID: "Ticket Price" + new Date(),
+        amount: Math.floor(Math.random() * (max - min + 1)) + min,
+        description: "Rock n Roll !",
+        invoiceDuration: 86400,
+      });
+      res.send(response);
+    } catch (err) {
+      console.log(err);
       next(err);
     }
   }

@@ -2,12 +2,12 @@ const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 
 class PostController {
+  static async getPost(req, res, next) {}
   static async addPost(req, res, next) {
     try {
       const { title, body } = req.body;
       const { userId } = req.userLogin;
       const { id } = req.params;
-      console.log();
       if (!title) throw { name: "Invalid Input", message: "Title is required" };
       if (!body) throw { name: "Invalid Input", message: "Body is required" };
       const postData = await prisma.post.create({
@@ -23,13 +23,11 @@ class PostController {
         postData,
       });
     } catch (err) {
-      console.log(err);
       next(err);
     }
   }
   static async updatePost(req, res, next) {
     const { threadId, postId } = req.params;
-    console.log(req.params);
     const { title, body } = req.body;
     try {
       const postData = await prisma.post.findUnique({
@@ -52,13 +50,11 @@ class PostController {
         },
       });
     } catch (err) {
-      console.log(err);
       next(err);
     }
   }
   static async deletePost(req, res, next) {
     const { postId } = req.params;
-    console.log(postId);
     try {
       const postData = await prisma.post.findUnique({
         where: {
