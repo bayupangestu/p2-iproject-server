@@ -5,7 +5,13 @@ const prisma = new PrismaClient();
 class ThreadController {
   static async getThread(req, res, next) {
     try {
-      const threadData = await prisma.thread.findMany({});
+      const threadData = await prisma.thread.findMany({
+        include: { 
+          user: true, 
+          post: true  
+        },
+        orderBy: [{ createdAt: "desc" }],
+      });
       res.status(200).json(threadData);
     } catch (err) {
       next(err);
@@ -55,6 +61,7 @@ class ThreadController {
         },
         include: {
           post: true,
+          user: true,
         },
       });
       res.status(200).json(dataDetail);
