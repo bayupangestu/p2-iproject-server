@@ -2,7 +2,6 @@ const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 
 class PostController {
-  static async getPost(req, res, next) {}
   static async addPost(req, res, next) {
     try {
       const { title, body } = req.body;
