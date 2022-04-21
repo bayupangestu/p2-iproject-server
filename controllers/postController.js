@@ -2,24 +2,6 @@ const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 
 class PostController {
-  static async getPost(req, res, next) {
-    try {
-      const { id } = req.params;
-      const postData = await prisma.post.findMany({
-        where: {
-          threadId: +id,
-        },
-        include: { user: true },
-      });
-      if (!postData) throw { name: "Not Found", message: `Post with id ${id} not found` };
-      res.status(200).json({
-        message: "Get post success!",
-        data: postData,
-      });
-    } catch (err) {
-      next(err);
-    }
-  }
   static async addPost(req, res, next) {
     try {
       const { title, body } = req.body;
@@ -40,7 +22,6 @@ class PostController {
         postData,
       });
     } catch (err) {
-      console.log(err);
       next(err);
     }
   }
@@ -68,13 +49,11 @@ class PostController {
         },
       });
     } catch (err) {
-      console.log(err);
       next(err);
     }
   }
   static async deletePost(req, res, next) {
     const { postId } = req.params;
-    console.log(postId);
     try {
       const postData = await prisma.post.findUnique({
         where: {

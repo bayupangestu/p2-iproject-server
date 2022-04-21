@@ -118,7 +118,6 @@ class ThreadController {
         data: thread,
       });
     } catch (err) {
-      console.log(err);
       next(err);
     }
   }
